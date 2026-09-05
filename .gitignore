@@ -1,0 +1,27 @@
+# Secrets — never commit
+.env
+
+# Cached HTTP responses + generated itineraries.
+# NOTE: no leading path — a pattern containing a slash is anchored to this file's
+# directory, so `data/*.sqlite` would miss `backend/data/`.
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

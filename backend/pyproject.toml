@@ -1,0 +1,57 @@
+[project]
+name = "nature-trails"
+version = "0.1.0"
+description = "An autonomous trip-planning agent for national parks, long-distance hikes and alpine traverses."
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.49",
+    "httpx>=0.27",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "python-dotenv>=1.0",
+    "rich>=13.7",
+    "typer>=0.12",
+    # HTTP API (see docs/WEB.md). uvicorn[standard] pulls in the faster event loop
+    # and websocket bits; sse-starlette handles Server-Sent Event framing.
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sse-starlette>=2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+trails = "nature_trails.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nature_trails"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# B008 flags function calls in argument defaults. That is exactly how Typer (and
+# FastAPI) declare options, so the rule is noise in a CLI.
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tool descriptions and system prompts are prose written for a model to read.
+# Hard-wrapping them to satisfy a line-length rule makes them worse, not better.
+"src/nature_trails/tools/*.py" = ["E501"]
+"src/nature_trails/agent/prompts.py" = ["E501"]
+"src/nature_trails/agent/schemas.py" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
